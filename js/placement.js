@@ -15,23 +15,23 @@
      instruction (en/ar). German content stays German in both languages. */
   var QUESTIONS = [
     // ---------- A1 ----------
-    { level: 'A1', q: 'Ich ___ Ahmed. Und wie heißt du?', o: ['heiße', 'heißt', 'heißen', 'heißes'], a: 0 },
-    { level: 'A1', q: '___ kommst du? — Aus Ägypten.', o: ['Wo', 'Woher', 'Wohin', 'Wer'], a: 1 },
-    { level: 'A1', q: 'Das ist ___ Buch.', o: ['eine', 'einen', 'ein', 'einer'], a: 2 },
-    { level: 'A1', q: 'Wir ___ heute Deutsch.', o: ['lernt', 'lerne', 'lernst', 'lernen'], a: 3 },
-    { level: 'A1', q: 'Hast du ___ Bruder?', o: ['einen', 'ein', 'eine', 'einem'], a: 0 },
+    { level: 'A1', q: 'Ich ___ Ahmed. Und wie heißt du?', o: ['heißt', 'heißen', 'heiße', 'heißes'], a: 2 },
+    { level: 'A1', q: '___ kommst du? — Aus Ägypten.', o: ['Woher', 'Wo', 'Wohin', 'Wer'], a: 0 },
+    { level: 'A1', q: 'Das ist ___ Buch.', o: ['eine', 'einen', 'einer', 'ein'], a: 3 },
+    { level: 'A1', q: 'Wir ___ heute Deutsch.', o: ['lernt', 'lernen', 'lerne', 'lernst'], a: 1 },
+    { level: 'A1', q: 'Hast du ___ Bruder?', o: ['ein', 'einen', 'eine', 'einem'], a: 1 },
     // ---------- A2 ----------
-    { level: 'A2', q: 'Gestern ___ ich ins Kino gegangen.', o: ['habe', 'bin', 'war', 'hatte'], a: 1 },
-    { level: 'A2', q: 'Ich freue mich ___ das Wochenende.', o: ['über', 'für', 'auf', 'an'], a: 2 },
-    { level: 'A2', q: 'Kannst du mir helfen? — Ja, ich helfe ___ gern.', o: ['dich', 'du', 'dein', 'dir'], a: 3 },
+    { level: 'A2', q: 'Gestern ___ ich ins Kino gegangen.', o: ['habe', 'war', 'hatte', 'bin'], a: 3 },
+    { level: 'A2', q: 'Ich freue mich ___ das Wochenende.', o: ['auf', 'über', 'für', 'an'], a: 0 },
+    { level: 'A2', q: 'Kannst du mir helfen? — Ja, ich helfe ___ gern.', o: ['dich', 'du', 'dir', 'dein'], a: 2 },
     { level: 'A2', q: 'Er ist ___ als sein Bruder.', o: ['größer', 'groß', 'am größten', 'größte'], a: 0 },
     { level: 'A2', q: 'Ich lerne Deutsch, ___ ich in Deutschland arbeiten möchte.', o: ['denn', 'weil', 'deshalb', 'obwohl'], a: 1 },
     // ---------- B1 ----------
-    { level: 'B1', q: 'Wenn ich mehr Zeit ___, würde ich jeden Tag Deutsch lernen.', o: ['habe', 'hatte', 'hätte', 'haben'], a: 2 },
+    { level: 'B1', q: 'Wenn ich mehr Zeit ___, würde ich jeden Tag Deutsch lernen.', o: ['habe', 'hätte', 'hatte', 'haben'], a: 1 },
     { level: 'B1', q: 'Das Auto, ___ vor dem Haus steht, gehört meiner Nachbarin.', o: ['der', 'die', 'dem', 'das'], a: 3 },
-    { level: 'B1', q: 'Die Prüfung ___ von allen Teilnehmern bestanden.', o: ['wurde', 'wird', 'ist', 'hat'], a: 0 },
-    { level: 'B1', q: 'Ich habe den Termin ___, weil ich krank war.', o: ['absagen', 'abgesagt', 'abgesagen', 'absagte'], a: 1 },
-    { level: 'B1', q: 'Trotz ___ Regens sind wir spazieren gegangen.', o: ['dem', 'den', 'des', 'der'], a: 2 }
+    { level: 'B1', q: 'Das Haus ___ im Jahr 1950 gebaut.', o: ['wurde', 'wird', 'hat', 'worden'], a: 0 },
+    { level: 'B1', q: 'Ich habe den Termin ___, weil ich krank war.', o: ['absagen', 'abgesagen', 'abgesagt', 'absagte'], a: 2 },
+    { level: 'B1', q: 'Trotz ___ Regens sind wir spazieren gegangen.', o: ['dem', 'den', 'der', 'des'], a: 3 }
   ];
 
   var LEVELS = ['A1', 'A2', 'B1'];
@@ -251,6 +251,7 @@
           'Name: ' + name + '\nPhone: ' + phone + (email ? '\nEmail: ' + email : '') +
           '\nPlease confirm my level, the next start date and the fees.';
       }
+      if (window.DD && window.DD.withRef) text = window.DD.withRef(text, 'result-' + s.level.toLowerCase());
       var channel = (e.submitter && e.submitter.getAttribute('data-channel')) || 'whatsapp';
       if (channel === 'email') {
         var subject = isAr ? 'نتيجة اختبار تحديد المستوى — ' + name : 'Placement test result — ' + name;

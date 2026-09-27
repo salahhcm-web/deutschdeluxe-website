@@ -58,6 +58,28 @@ How the Arabic toggle works: any element with `data-i18n="key"` gets its innerHT
 cached from the HTML on first switch, so both directions work without reload. Choice is stored in
 `localStorage` (`dd-lang`); `?lang=ar` in the URL forces Arabic. Keys with no Arabic entry simply stay English.
 
+## Releasing changes: bump the asset version
+
+CSS and JS are cached by browsers for 30 days, so every page loads them as `css/site.css?v=20260927`,
+`js/site.js?v=20260927` etc. **Whenever you change a file in `css/` or `js/`, change the `?v=` value in all 7 HTML
+files** (use today's date), otherwise returning visitors keep the old file:
+
+```bash
+sed -i -E 's/\?v=[0-9]+/?v=YYYYMMDD/g' *.html
+```
+
+## Lead reference codes (which page / ad brought the lead)
+
+Every pre-filled WhatsApp or email message ends with a line like `Ref: courses/a1 · facebook/b1-oct`:
+
+- `courses/a1` = the page and the button (or `contact/form-exam`, `placement-test/result-b1`).
+- `facebook/b1-oct` = `utm_source` / `utm_campaign` from the landing URL, kept for the rest of the visit. Without UTMs,
+  `fbclid` / `gclid` are recorded as `facebook` / `google`; plain visits show no campaign part.
+
+Tag every ad URL, e.g. `https://deutschdeluxe.site/courses.html?utm_source=facebook&utm_campaign=b1-oct`, and ask the
+team to log the `Ref:` line of each new chat (a WhatsApp Business label per campaign works well). That gives leads per
+campaign and cost per lead without any tracking script. Code: `leadRef()` in `js/site.js`.
+
 ## Uploading to Namecheap cPanel (public_html)
 
 1. cPanel → **File Manager** → `public_html` (or the domain's document root).
@@ -86,7 +108,9 @@ To embed a Google Maps iframe, change `frame-src 'none'` to `frame-src https://w
 
 ## TODO — placeholders the owner must replace
 
-- [ ] Stats: `1000+` students, `5/5` rating, `Seit 20XX` founding year (`index.html`, `about.html`, i18n `hero.stat*`, `side.*`, `stats.*`)
+- [ ] Stats: `XXX+` students, `X/5` rating, `Seit 20XX` founding year (`index.html`); `XXX+` learners and `XX%` pass rate
+      (`about.html`). Only publish figures you can back up. With a real rating you can add stars back after the number:
+      `<span class="stars" aria-label="5 out of 5 stars">★★★★★</span>`
 - [ ] Prices "from X EGP", durations, sessions, next start dates, seats left — all five levels (`courses.html`)
 - [ ] Offer terms: early-bird −10 %, A1+A2 bundle (−1,000 EGP), installments (`courses.html#offers`)
 - [ ] Schedule days/times (morning / evening / weekend / intensive)
@@ -99,6 +123,8 @@ To embed a Google Maps iframe, change `frame-src 'none'` to `frame-src https://w
 - [ ] Real photos for the Instagram tiles (`index.html#community`) with alt text
 - [ ] Partnerships / accreditations line (`about.html#certificates`)
 - [ ] Founding story details (`about.html#story`)
+- [ ] Once prices are final, add `"price"` + `"priceCurrency": "EGP"` back to each `offers` block in the `courses.html`
+      JSON-LD (removed so Google does not show placeholder prices), and mention the starting fee in the courses meta description
 - [ ] `sitemap.xml` `<lastmod>` dates when you publish changes
 
 `reference/brand-feedback-post.webp` is an internal design reference that contains real customer names — it

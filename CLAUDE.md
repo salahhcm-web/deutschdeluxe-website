@@ -14,6 +14,8 @@ https://portal.deutschdeluxe.site.
   assets — never recolour or redraw them.
 - Placeholders the owner must replace are marked `<!-- PLACEHOLDER: replace with real data -->` (prices, dates, stats,
   trainer names, testimonials, address, map link). Full list in README.md. Do not invent real-looking numbers.
+- CSS/JS are cached 30 days: after editing `css/` or `js/`, bump the `?v=YYYYMMDD` query on every page (README).
+- Pre-filled WhatsApp/email messages end with a `Ref:` line (page/button + utm campaign) — keep it when adding CTAs.
 - `reference/` holds a brand image with real customer names: git-ignored, never publish it.
 
 ## Check before committing

@@ -110,6 +110,54 @@
     visit: 'Hello Deutsch Deluxe! I would like to visit the center in Nasr City. When can I come by?'
   };
 
+  /* ------------------------------------------------------------------
+     Lead reference codes
+     Every pre-filled WhatsApp / email message ends with a short line such as
+     "Ref: courses/a1 · facebook/b1-oct". Staff can count leads per page and
+     per ad campaign from the chats alone (no tracking scripts, CSP stays strict).
+     The campaign part comes from utm_source / utm_campaign on the landing URL
+     and is kept for the rest of the visit (sessionStorage).
+  ------------------------------------------------------------------ */
+  var SRC_KEY = 'dd-src';
+  var capturedTag = '';
+
+  function cleanTag(v) {
+    return String(v || '').toLowerCase().replace(/[^a-z0-9._-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40);
+  }
+
+  function captureCampaign() {
+    var params = new URLSearchParams(location.search);
+    var source = cleanTag(params.get('utm_source'));
+    var campaign = cleanTag(params.get('utm_campaign'));
+    if (!source && !campaign) {
+      if (params.get('fbclid')) source = 'facebook';
+      else if (params.get('gclid')) source = 'google';
+    }
+    if (!source && !campaign) return;
+    var tag = (source || 'utm') + (campaign ? '/' + campaign : '');
+    try { sessionStorage.setItem(SRC_KEY, tag); } catch (e) { /* storage may be blocked */ }
+    capturedTag = tag;
+  }
+
+  function campaignTag() {
+    if (capturedTag) return capturedTag;
+    try { return sessionStorage.getItem(SRC_KEY) || ''; } catch (e) { return ''; }
+  }
+
+  function pageName() {
+    var file = location.pathname.split('/').pop() || 'index';
+    return file.replace(/\.html$/, '') || 'index';
+  }
+
+  function leadRef(topic) {
+    var tag = campaignTag();
+    return 'Ref: ' + pageName() + '/' + (topic || 'general') + (tag ? ' · ' + tag : '');
+  }
+
+  function withRef(message, topic) {
+    return message.replace(/\s+$/, '') + '\n\n' + leadRef(topic);
+  }
+
   function waUrl(message) {
     return 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(message);
   }
@@ -121,7 +169,7 @@
       var key = links[i].getAttribute('data-wa') || 'general';
       var msg = WA_MESSAGES[key] || WA_MESSAGES.general;
       if (lang === 'ar' && dict['wa.' + key]) msg = dict['wa.' + key];
-      links[i].setAttribute('href', waUrl(msg));
+      links[i].setAttribute('href', waUrl(withRef(msg, key)));
       links[i].setAttribute('target', '_blank');
       links[i].setAttribute('rel', 'noopener noreferrer');
     }
@@ -243,7 +291,7 @@
       e.preventDefault();
       if (!validate(form)) return;
       var lang = currentLang();
-      var text = buildContactMessage(form, lang);
+      var text = withRef(buildContactMessage(form, lang), 'form-' + (cleanTag(fieldValue(form, 'topic')) || 'general'));
       var channel = (e.submitter && e.submitter.getAttribute('data-channel')) || 'whatsapp';
       if (channel === 'email') {
         var subject = lang === 'ar' ? 'استفسار من موقع دويتش ديلوكس' : 'Inquiry from deutschdeluxe.site';
@@ -268,6 +316,7 @@
   window.DD = {
     lang: currentLang,
     waUrl: waUrl,
+    withRef: withRef,
     email: EMAIL,
     t: function (key, fallback) {
       return currentLang() === 'ar' && dict[key] ? dict[key] : fallback;
@@ -275,6 +324,7 @@
   };
 
   function init() {
+    captureCampaign();
     initMenu();
     initScrollUi();
     markActiveNav();
