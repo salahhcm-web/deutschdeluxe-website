@@ -19,7 +19,7 @@ https://portal.deutschdeluxe.site.
 ## Portal integration
 - The contact form and the placement-test result are also sent (fire-and-forget `fetch`, form-encoded, no cookies) to
   `https://portal.deutschdeluxe.site/api/website/enquiries` → CRM enquiry. `js/site.js` keeps `utm_*` from the landing
-  URL in sessionStorage for attribution. Both forms have a hidden `website` honeypot field — keep it empty and out of `.field`.
+  URL in sessionStorage for attribution. Both forms have a hidden `hp_url` honeypot field (not `website`: browsers autofill that) — keep it out of `.field`. Enquiry data is deleted by the portal 6 months after the last contact if the person does not enrol; the privacy text says so.
 - `.htaccess` CSP `connect-src` must include `https://portal.deutschdeluxe.site`.
 - The placement result links to `/register?level=` on the portal (suggested course → level already finished).
 
