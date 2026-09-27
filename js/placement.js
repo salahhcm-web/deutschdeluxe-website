@@ -204,7 +204,7 @@
             '<button type="submit" class="btn btn-wa" data-channel="whatsapp">' + waIcon() + ' ' + esc(t('quiz.lead.sendWa', 'Send via WhatsApp')) + '</button>' +
             '<button type="submit" class="btn btn-outline" data-channel="email">' + esc(t('quiz.lead.sendMail', 'Send by email instead')) + '</button>' +
           '</div>' +
-          '<p class="form-note">' + esc(t('quiz.lead.note', 'Your message opens in WhatsApp or your email app and you send it yourself. Your result and details are also saved in our student portal so our team can follow up.')) + '</p>' +
+          '<p class="form-note">' + esc(t('quiz.lead.note', 'Your message opens in WhatsApp or your email app and you send it yourself. Your result and details are also saved in our student portal so our team can follow up, and deleted after 6 months if you don’t enrol.')) + '</p>' +
         '</form>' +
         '<p id="lead-done" class="notice" hidden tabindex="-1">' + esc(t('quiz.lead.done', 'Thank you! If WhatsApp did not open, tap the floating WhatsApp button or email us at deutschdeluxe30@gmail.com.')) + '</p>' +
       '</div>' +
