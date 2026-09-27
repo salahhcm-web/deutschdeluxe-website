@@ -5,6 +5,8 @@
   'use strict';
 
   var WA_NUMBER = '201115578909';
+  var PORTAL = 'https://portal.deutschdeluxe.site';
+  var UTM_KEY = 'dd-utm';
   var EMAIL = 'deutschdeluxe30@gmail.com';
   var STORAGE_KEY = 'dd-lang';
   var doc = document;
@@ -251,6 +253,10 @@
       } else {
         window.open(waUrl(text), '_blank', 'noopener');
       }
+      sendLead({
+        form: 'contact', name: fieldValue(form, 'name'), phone: fieldValue(form, 'phone'), email: fieldValue(form, 'email'),
+        topic: fieldValue(form, 'topic'), message: fieldValue(form, 'message'), website: fieldValue(form, 'website')
+      });
       var done = doc.getElementById('contact-done');
       if (done) { done.hidden = false; done.focus(); }
     });
@@ -264,17 +270,54 @@
     for (var i = 0; i < els.length; i++) els[i].textContent = String(new Date().getFullYear());
   }
 
+  /* ------------------------------------------------------------------
+     Portal CRM: every form is also filed as an enquiry in the student
+     portal so the team can follow up. Remember the ad (utm_*) the visitor
+     arrived from for this browser tab, so enquiries are attributed.
+  ------------------------------------------------------------------ */
+  function rememberUtm() {
+    try {
+      var q = new URLSearchParams(location.search);
+      if (!q.get('utm_source')) return;
+      var utm = {};
+      ['utm_source', 'utm_medium', 'utm_campaign'].forEach(function (k) {
+        var v = q.get(k);
+        if (v) utm[k] = v.slice(0, k === 'utm_campaign' ? 100 : 60);
+      });
+      sessionStorage.setItem(UTM_KEY, JSON.stringify(utm));
+    } catch (e) { /* storage blocked: attribution is optional */ }
+  }
+
+  function sendLead(fields) {
+    try {
+      var body = new URLSearchParams();
+      var utm = {};
+      try { utm = JSON.parse(sessionStorage.getItem(UTM_KEY) || '{}') || {}; } catch (e) { utm = {}; }
+      Object.keys(utm).forEach(function (k) { body.append(k, utm[k]); });
+      Object.keys(fields).forEach(function (k) { if (fields[k]) body.append(k, fields[k]); });
+      body.append('lang', currentLang());
+      // Simple CORS request (form-encoded, no cookies). Fire-and-forget: WhatsApp/email still opens.
+      return fetch(PORTAL + '/api/website/enquiries', {
+        method: 'POST', mode: 'cors', credentials: 'omit', keepalive: true,
+        headers: { 'Accept': 'application/json' }, body: body
+      }).catch(function () { return null; });
+    } catch (e) { return null; }
+  }
+
   // Expose a tiny API for placement.js and inline needs
   window.DD = {
     lang: currentLang,
     waUrl: waUrl,
     email: EMAIL,
+    portal: PORTAL,
+    sendLead: sendLead,
     t: function (key, fallback) {
       return currentLang() === 'ar' && dict[key] ? dict[key] : fallback;
     }
   };
 
   function init() {
+    rememberUtm();
     initMenu();
     initScrollUi();
     markActiveNav();

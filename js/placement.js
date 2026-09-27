@@ -198,14 +198,21 @@
             '<div class="field"><label for="lead-name">' + esc(t('form.name', 'Full name')) + '</label><input id="lead-name" name="name" type="text" autocomplete="name" required><span class="err">' + esc(t('form.required', 'This field is required.')) + '</span></div>' +
             '<div class="field"><label for="lead-phone">' + esc(t('form.phone', 'Phone / WhatsApp')) + '</label><input id="lead-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" dir="ltr" placeholder="+20 1xx xxx xxxx" required><span class="err">' + esc(t('form.required', 'This field is required.')) + '</span></div>' +
             '<div class="field full"><label for="lead-email">' + esc(t('form.email', 'Email')) + ' <span class="muted">(' + esc(t('form.optional', 'optional')) + ')</span></label><input id="lead-email" name="email" type="email" autocomplete="email" dir="ltr"><span class="err">' + esc(t('form.emailInvalid', 'Please enter a valid email address.')) + '</span></div>' +
+            '<div class="visually-hidden" aria-hidden="true"><label for="lead-website">Leave this field empty</label><input id="lead-website" name="website" type="text" tabindex="-1" autocomplete="off"></div>' +
           '</div>' +
           '<div class="btn-row">' +
             '<button type="submit" class="btn btn-wa" data-channel="whatsapp">' + waIcon() + ' ' + esc(t('quiz.lead.sendWa', 'Send via WhatsApp')) + '</button>' +
             '<button type="submit" class="btn btn-outline" data-channel="email">' + esc(t('quiz.lead.sendMail', 'Send by email instead')) + '</button>' +
           '</div>' +
-          '<p class="form-note">' + esc(t('quiz.lead.note', 'Nothing is stored on this website. Your message opens in WhatsApp or your email app, and you send it yourself.')) + '</p>' +
+          '<p class="form-note">' + esc(t('quiz.lead.note', 'Your message opens in WhatsApp or your email app and you send it yourself. Your result and details are also saved in our student portal so our team can follow up.')) + '</p>' +
         '</form>' +
         '<p id="lead-done" class="notice" hidden tabindex="-1">' + esc(t('quiz.lead.done', 'Thank you! If WhatsApp did not open, tap the floating WhatsApp button or email us at deutschdeluxe30@gmail.com.')) + '</p>' +
+      '</div>' +
+      '<div class="card mt-20">' +
+        '<span class="label">' + esc(t('quiz.lead.eyebrow', 'Next step')) + '</span>' +
+        '<h3 class="h3">' + esc(t('quiz.portal.title', 'Ready to start?')) + '</h3>' +
+        '<p>' + esc(t('quiz.portal.body', 'Create your student-portal account – your level is already filled in. Once our team confirms it, your schedule, materials and progress are waiting there.')) + '</p>' +
+        '<a class="btn btn-ink" href="' + esc(portalRegisterUrl(s.level)) + '">' + esc(t('quiz.portal.cta', 'Create my portal account')) + ' <span class="arrow">→</span></a>' +
       '</div>' +
       '<div class="btn-row mt-20 jc-center">' +
         '<button type="button" class="btn btn-outline btn-sm" id="quiz-restart">' + esc(t('quiz.restart', 'Take the test again')) + '</button>' +
@@ -226,7 +233,7 @@
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       var ok = true;
-      var req = form.querySelectorAll('input');
+      var req = form.querySelectorAll('.field input');
       for (var i = 0; i < req.length; i++) {
         var wrap = req[i].closest('.field');
         var valid = req[i].checkValidity();
@@ -252,6 +259,9 @@
           '\nPlease confirm my level, the next start date and the fees.';
       }
       var channel = (e.submitter && e.submitter.getAttribute('data-channel')) || 'whatsapp';
+      if (window.DD && window.DD.sendLead) {
+        window.DD.sendLead({ form: 'placement', name: name, phone: phone, email: email, level: s.level, score: s.total + '/' + QUESTIONS.length, website: form.elements.website.value });
+      }
       if (channel === 'email') {
         var subject = isAr ? 'نتيجة اختبار تحديد المستوى — ' + name : 'Placement test result — ' + name;
         location.href = 'mailto:' + (window.DD ? window.DD.email : 'deutschdeluxe30@gmail.com') + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(text);
@@ -263,6 +273,13 @@
       done.hidden = false;
       done.focus();
     });
+  }
+
+  // The quiz suggests the course to START; the portal asks for the level already FINISHED.
+  function portalRegisterUrl(level) {
+    var finished = { A1: 'beginner', A2: 'A1', B1: 'A2', B2: 'B1' }[level] || 'beginner';
+    var base = (window.DD && window.DD.portal) || 'https://portal.deutschdeluxe.site';
+    return base + '/register?level=' + encodeURIComponent(finished);
   }
 
   function waIcon() {

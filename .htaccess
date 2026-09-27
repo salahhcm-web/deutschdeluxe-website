@@ -75,7 +75,7 @@ AddType font/woff2 .woff2
   # Strict CSP: everything is self-hosted. No inline scripts/styles are used anywhere.
   # form-action allows the WhatsApp/mailto hand-off; frame-src 'none' because we link to Google Maps instead of embedding it.
   # If you ever embed a Google Map iframe, change frame-src to: frame-src https://www.google.com
-  Header always set Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-src 'none'; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self' https://wa.me mailto:; upgrade-insecure-requests"
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://portal.deutschdeluxe.site; frame-src 'none'; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self' https://wa.me mailto:; upgrade-insecure-requests"
   Header unset X-Powered-By
   Header unset Server
 </IfModule>

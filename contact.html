@@ -190,7 +190,7 @@
         <div class="card">
           <span class="label" data-i18n="ct.formEyebrow">Send a message</span>
           <h2 class="h3" data-i18n="ct.formTitle">Tell us about your plan.</h2>
-          <p data-i18n="ct.formLead">Fill in the form and choose WhatsApp or email — your message opens in the app with everything pre-filled. Nothing is stored on this website.</p>
+          <p data-i18n="ct.formLead">Fill in the form and choose WhatsApp or email — your message opens in the app with everything pre-filled. A copy goes to our student-services team so we can call you back.</p>
           <form id="contact-form" class="form" novalidate>
             <div class="form-grid">
               <div class="field">
@@ -221,6 +221,10 @@
                   <option value="other" data-i18n="form.t.other">Something else</option>
                 </select>
               </div>
+              <div class="visually-hidden" aria-hidden="true">
+                <label for="c-website">Leave this field empty</label>
+                <input id="c-website" name="website" type="text" tabindex="-1" autocomplete="off">
+              </div>
               <div class="field full">
                 <label for="c-message"><span data-i18n="form.message">Message</span> <span class="muted">(<span data-i18n="form.optional">optional</span>)</span></label>
                 <textarea id="c-message" name="message" rows="4" placeholder="Your goal, current level, preferred schedule…" data-i18n-attr="placeholder:form.messagePh"></textarea>
@@ -230,7 +234,7 @@
               <button type="submit" class="btn btn-wa" data-channel="whatsapp" data-i18n="form.sendWa">Send via WhatsApp <span class="arrow">↗</span></button>
               <button type="submit" class="btn btn-outline" data-channel="email" data-i18n="form.sendMail">Send by email</button>
             </div>
-            <p class="form-note" data-i18n="form.privacy">By sending, you open WhatsApp or your email app with the message pre-filled. We use your details only to reply to you.</p>
+            <p class="form-note" data-i18n="form.privacy">By sending, you open WhatsApp or your email app with the message pre-filled, and your details are saved in our student portal so our team can follow up. We use them only to reply to you.</p>
           </form>
           <p id="contact-done" class="notice mt-20" hidden tabindex="-1" data-i18n="form.done">Thank you! If nothing opened, tap the floating WhatsApp button or email deutschdeluxe30@gmail.com directly.</p>
         </div>
