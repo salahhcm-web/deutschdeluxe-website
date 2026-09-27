@@ -1,5 +1,5 @@
 /* Deutsch Deluxe — site.js
-   Shared behaviour: sticky header menu, EN/AR toggle (data-i18n), WhatsApp deep links,
+   Shared behaviour: sticky header menu, EN/DE/AR switcher (data-i18n), WhatsApp deep links,
    contact form -> WhatsApp / mailto, current-year, active nav. No dependencies. */
 (function () {
   'use strict';
@@ -11,26 +11,30 @@
   var root = doc.documentElement;
 
   /* ------------------------------------------------------------------
-     i18n
-     English is authored in the HTML. Arabic strings live in js/i18n.js
-     (window.DD_I18N.ar). On first switch we cache the English markup on
-     each node so we can toggle back without a reload.
+     i18n — English (authored in the HTML), German and Arabic.
+     Dictionaries live in js/i18n.js (window.DD_I18N.ar) and js/i18n-de.js
+     (window.DD_I18N.de). On first switch we cache the English markup on
+     each node so we can switch back without a reload.
   ------------------------------------------------------------------ */
-  var dict = (window.DD_I18N && window.DD_I18N.ar) || {};
+  var LANGS = ['en', 'de', 'ar'];
+  var dicts = window.DD_I18N || {};
 
   function currentLang() {
-    return root.getAttribute('lang') === 'ar' ? 'ar' : 'en';
+    var l = root.getAttribute('lang');
+    return LANGS.indexOf(l) > -1 ? l : 'en';
+  }
+
+  function lookup(lang, key) {
+    var d = dicts[lang];
+    return d && Object.prototype.hasOwnProperty.call(d, key) ? d[key] : null;
   }
 
   function translateNode(el, lang) {
     var key = el.getAttribute('data-i18n');
     if (key) {
       if (el.dataset.i18nEn === undefined) el.dataset.i18nEn = el.innerHTML;
-      if (lang === 'ar' && Object.prototype.hasOwnProperty.call(dict, key)) {
-        el.innerHTML = dict[key];
-      } else {
-        el.innerHTML = el.dataset.i18nEn;
-      }
+      var val = lang === 'en' ? null : lookup(lang, key);
+      el.innerHTML = val !== null ? val : el.dataset.i18nEn;
     }
     var attrSpec = el.getAttribute('data-i18n-attr');
     if (attrSpec) {
@@ -41,27 +45,22 @@
         if (!attr || !k) return;
         var cacheName = 'i18nEnAttr' + attr.replace(/[^a-z0-9]/gi, '_');
         if (el.dataset[cacheName] === undefined) el.dataset[cacheName] = el.getAttribute(attr) || '';
-        if (lang === 'ar' && Object.prototype.hasOwnProperty.call(dict, k)) {
-          el.setAttribute(attr, dict[k]);
-        } else {
-          el.setAttribute(attr, el.dataset[cacheName]);
-        }
+        var v = lang === 'en' ? null : lookup(lang, k);
+        el.setAttribute(attr, v !== null ? v : el.dataset[cacheName]);
       });
     }
   }
 
   function applyLang(lang, persist) {
-    lang = lang === 'ar' ? 'ar' : 'en';
+    if (LANGS.indexOf(lang) === -1) lang = 'en';
     root.setAttribute('lang', lang);
     root.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
     var nodes = doc.querySelectorAll('[data-i18n], [data-i18n-attr]');
     for (var i = 0; i < nodes.length; i++) translateNode(nodes[i], lang);
 
-    var toggles = doc.querySelectorAll('.lang-toggle');
-    for (var t = 0; t < toggles.length; t++) {
-      toggles[t].querySelector('.lang-label').textContent = lang === 'ar' ? 'English' : 'العربية';
-      toggles[t].setAttribute('aria-label', lang === 'ar' ? 'Switch to English' : 'التبديل إلى العربية');
-      toggles[t].setAttribute('lang', lang === 'ar' ? 'en' : 'ar');
+    var opts = doc.querySelectorAll('.lang-opt');
+    for (var t = 0; t < opts.length; t++) {
+      opts[t].setAttribute('aria-pressed', String(opts[t].getAttribute('data-lang') === lang));
     }
     updateWhatsAppLinks();
     if (persist) {
@@ -73,16 +72,16 @@
   function initLang() {
     var saved = null;
     try { saved = localStorage.getItem(STORAGE_KEY); } catch (e) { saved = null; }
-    var params = new URLSearchParams(location.search);
-    var fromUrl = params.get('lang');
-    var lang = fromUrl === 'ar' || fromUrl === 'en' ? fromUrl : saved;
-    if (lang === 'ar') applyLang('ar', !!fromUrl);
-    else applyLang('en', false);
+    var fromUrl = new URLSearchParams(location.search).get('lang');
+    var urlOk = LANGS.indexOf(fromUrl) > -1;
+    var lang = urlOk ? fromUrl : saved;
+    applyLang(LANGS.indexOf(lang) > -1 ? lang : 'en', urlOk);
 
-    var toggles = doc.querySelectorAll('.lang-toggle');
-    for (var t = 0; t < toggles.length; t++) {
-      toggles[t].addEventListener('click', function () {
-        applyLang(currentLang() === 'ar' ? 'en' : 'ar', true);
+    var opts = doc.querySelectorAll('.lang-opt');
+    for (var t = 0; t < opts.length; t++) {
+      opts[t].addEventListener('click', function () {
+        var l = this.getAttribute('data-lang');
+        if (l !== currentLang()) applyLang(l, true);
       });
     }
   }
@@ -168,7 +167,7 @@
     for (var i = 0; i < links.length; i++) {
       var key = links[i].getAttribute('data-wa') || 'general';
       var msg = WA_MESSAGES[key] || WA_MESSAGES.general;
-      if (lang === 'ar' && dict['wa.' + key]) msg = dict['wa.' + key];
+      msg = (lang !== 'en' && lookup(lang, 'wa.' + key)) || msg;
       links[i].setAttribute('href', waUrl(withRef(msg, key)));
       links[i].setAttribute('target', '_blank');
       links[i].setAttribute('rel', 'noopener noreferrer');
@@ -268,6 +267,14 @@
     var msg = fieldValue(form, 'message');
     var topicEl = form.elements.topic;
     var topicLabel = topicEl && topicEl.selectedOptions && topicEl.selectedOptions[0] ? topicEl.selectedOptions[0].textContent.trim() : topic;
+    if (lang === 'de') {
+      return 'Hallo Deutsch Deluxe!\n' +
+        'Name: ' + name + '\n' +
+        'Telefon: ' + phone + '\n' +
+        (email ? 'E-Mail: ' + email + '\n' : '') +
+        'Thema: ' + topicLabel + '\n' +
+        (msg ? 'Nachricht: ' + msg : '');
+    }
     if (lang === 'ar') {
       return 'أهلًا دويتش ديلوكس!\n' +
         'الاسم: ' + name + '\n' +
@@ -294,7 +301,7 @@
       var text = withRef(buildContactMessage(form, lang), 'form-' + (cleanTag(fieldValue(form, 'topic')) || 'general'));
       var channel = (e.submitter && e.submitter.getAttribute('data-channel')) || 'whatsapp';
       if (channel === 'email') {
-        var subject = lang === 'ar' ? 'استفسار من موقع دويتش ديلوكس' : 'Inquiry from deutschdeluxe.site';
+        var subject = { ar: 'استفسار من موقع دويتش ديلوكس', de: 'Anfrage über deutschdeluxe.site' }[lang] || 'Inquiry from deutschdeluxe.site';
         location.href = 'mailto:' + EMAIL + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(text);
       } else {
         window.open(waUrl(text), '_blank', 'noopener');
@@ -319,7 +326,8 @@
     withRef: withRef,
     email: EMAIL,
     t: function (key, fallback) {
-      return currentLang() === 'ar' && dict[key] ? dict[key] : fallback;
+      var lang = currentLang();
+      return (lang !== 'en' && lookup(lang, key)) || fallback;
     }
   };
 

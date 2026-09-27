@@ -173,7 +173,7 @@
   function renderResult() {
     var s = score();
     var r = resultTexts(s.level);
-    var isAr = lang() === 'ar';
+    var curLang = lang();
     var html = '' +
       '<div class="result-card" role="region" aria-labelledby="result-title">' +
         '<span class="glyph-bg" aria-hidden="true">✳</span>' +
@@ -238,7 +238,13 @@
       var phone = form.elements.phone.value.trim();
       var email = form.elements.email.value.trim();
       var text;
-      if (isAr) {
+      if (curLang === 'de') {
+        text = 'Hallo Deutsch Deluxe! Ich habe gerade den Einstufungstest auf eurer Website gemacht.\n' +
+          'Ergebnis: ' + s.total + '/' + QUESTIONS.length + ' (A1: ' + s.per.A1 + '/5, A2: ' + s.per.A2 + '/5, B1: ' + s.per.B1 + '/5)\n' +
+          'Empfohlenes Niveau: ' + s.level + ' — empfohlener Kurs: ' + r.course + '\n' +
+          'Name: ' + name + '\nTelefon: ' + phone + (email ? '\nE-Mail: ' + email : '') +
+          '\nBitte bestätigt mein Niveau, den nächsten Starttermin und die Kosten.';
+      } else if (curLang === 'ar') {
         text = 'أهلًا دويتش ديلوكس! أنهيت اختبار تحديد المستوى على الموقع.\n' +
           'النتيجة: ' + s.total + '/' + QUESTIONS.length + ' (A1: ' + s.per.A1 + '/5، A2: ' + s.per.A2 + '/5، B1: ' + s.per.B1 + '/5)\n' +
           'المستوى المقترح: ' + s.level + ' — الكورس المقترح: ' + r.course + '\n' +
@@ -254,7 +260,7 @@
       if (window.DD && window.DD.withRef) text = window.DD.withRef(text, 'result-' + s.level.toLowerCase());
       var channel = (e.submitter && e.submitter.getAttribute('data-channel')) || 'whatsapp';
       if (channel === 'email') {
-        var subject = isAr ? 'نتيجة اختبار تحديد المستوى — ' + name : 'Placement test result — ' + name;
+        var subject = ({ ar: 'نتيجة اختبار تحديد المستوى — ', de: 'Ergebnis Einstufungstest — ' }[curLang] || 'Placement test result — ') + name;
         location.href = 'mailto:' + (window.DD ? window.DD.email : 'deutschdeluxe30@gmail.com') + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(text);
       } else {
         var url = window.DD ? window.DD.waUrl(text) : 'https://wa.me/201115578909?text=' + encodeURIComponent(text);

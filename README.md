@@ -18,8 +18,10 @@ about.html            Story, method (4 skills), trainers, student portal, certif
 contact.html          WhatsApp / phone / email / address / hours / map link + contact form (WhatsApp or mailto)
 404.html              Error page (asset links are root-absolute so it works from any path)
 css/site.css          The whole design system (tokens, night/day bands, components, RTL, dark mode, motion)
-js/site.js            Header menu, EN/AR toggle (data-i18n), WhatsApp deep links, contact form, back-to-top
+js/site.js            Header menu, DE/EN/AR switcher (data-i18n), WhatsApp deep links, contact form, back-to-top
 js/i18n.js            Arabic dictionary: window.DD_I18N.ar[key]  (English lives in the HTML)
+js/i18n-de.js         German dictionary: window.DD_I18N.de[key]
+img/flags/            Flags for the language switcher (de, gb, eg)
 js/placement.js       Quiz questions, scoring, result copy, lead form
 img/logo/             Official logo files (never recolour). Header/footer use logo-white.svg
 favicon.svg           = img/logo/icon.svg      apple-touch-icon.png = 180px render of the icon
@@ -34,7 +36,8 @@ and `<footer class="site-footer"`).
 
 ## Editing prices, dates, seats, teachers (the "data" places)
 
-There is no database; the text lives in the HTML and its Arabic twin lives in `js/i18n.js`.
+There is no database; the text lives in the HTML, its Arabic twin in `js/i18n.js` and its German twin in `js/i18n-de.js`
+(same keys — when you change a text, change all three).
 Search for the comment `<!-- PLACEHOLDER: replace with real data -->` — every placeholder block is marked.
 
 | What | English (HTML) | Arabic (`js/i18n.js` key) |
@@ -53,10 +56,10 @@ Search for the comment `<!-- PLACEHOLDER: replace with real data -->` — every 
 | WhatsApp pre-filled messages | `js/site.js` → `WA_MESSAGES` | `wa.*` |
 | Placement quiz questions | `js/placement.js` → `QUESTIONS` (keep 5 per level; `PASS_MARK` = 4/5) | `quiz.*` (UI strings only) |
 
-How the Arabic toggle works: any element with `data-i18n="key"` gets its innerHTML replaced by
-`DD_I18N.ar[key]` when Arabic is selected (attributes via `data-i18n-attr="content:key"`). English is
+How the language switcher works (🇩🇪 DE · 🇬🇧 EN · 🇪🇬 عربي in the header): any element with `data-i18n="key"` gets its
+innerHTML replaced by `DD_I18N.de[key]` or `DD_I18N.ar[key]` (attributes via `data-i18n-attr="content:key"`). English is
 cached from the HTML on first switch, so both directions work without reload. Choice is stored in
-`localStorage` (`dd-lang`); `?lang=ar` in the URL forces Arabic. Keys with no Arabic entry simply stay English.
+`localStorage` (`dd-lang`); `?lang=de` / `?lang=ar` in the URL forces a language. Keys with no entry simply stay English.
 
 ## Releasing changes: bump the asset version
 
@@ -90,7 +93,7 @@ campaign and cost per lead without any tracking script. Code: `leadRef()` in `js
    Easiest: zip the folder, upload the zip, "Extract" in File Manager, delete the zip.
 3. Make sure **AutoSSL / Let's Encrypt** is active for `deutschdeluxe.site` — `.htaccess` redirects everything to HTTPS.
 4. Test: `https://deutschdeluxe.site/`, `/courses`, `/placement-test.html`, a wrong URL (should show the 404 page),
-   the Arabic toggle, and one "Ask on WhatsApp" button on a phone.
+   the DE/EN/AR switcher, and one "Ask on WhatsApp" button on a phone.
 5. Optional: Google Search Console → submit `https://deutschdeluxe.site/sitemap.xml`.
 
 `.htaccess` gives you: HTTPS + non-www redirect, clean URLs (`/courses` → `courses.html`), 404 page,

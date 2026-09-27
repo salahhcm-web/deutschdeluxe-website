@@ -8,7 +8,8 @@ https://portal.deutschdeluxe.site.
 - Plain HTML + CSS + vanilla JS. **No build step, no frameworks, no CDN assets, no inline scripts/styles** — the `.htaccess`
   CSP is `default-src 'self'` and must keep passing.
 - Pages: index, courses, placement-test, exams, about, contact, 404. Header/footer markup is duplicated in every page: change all 7.
-- Copy: English lives in the HTML; Arabic in `js/i18n.js` under the same `data-i18n` key (551 keys). Every new visible string needs both.
+- Copy: English lives in the HTML; Arabic in `js/i18n.js` and German in `js/i18n-de.js` under the same `data-i18n` key.
+  Every new visible string needs all three (EN, DE, AR). Header has a 3-flag switcher (DE / EN / AR with the Egyptian flag).
 - Design: mixed world — dark navy/neon "night" bands (hero, how-it-works, feedback, CTA, footer) and light "day" bands
   (tracks, trainers, prices, FAQ, contact). Tokens at the top of `css/site.css`. Logo files in `img/logo/` are the official
   assets — never recolour or redraw them.
@@ -22,7 +23,7 @@ https://portal.deutschdeluxe.site.
 ```bash
 php -r 'foreach (glob("*.html") as $f) { $d = new DOMDocument; libxml_use_internal_errors(true); $d->loadHTMLFile($f); echo $f, ": ", count(libxml_get_errors()), " errors\n"; libxml_clear_errors(); }'
 ```
-Open each page at 375px width and confirm no horizontal scroll; toggle EN/AR on every page; run the placement test once.
+Open each page at 375px width and confirm no horizontal scroll; switch DE/EN/AR on every page; run the placement test once.
 
 ## Preview locally
 ```bash
