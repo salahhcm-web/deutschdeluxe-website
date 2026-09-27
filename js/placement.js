@@ -198,7 +198,7 @@
             '<div class="field"><label for="lead-name">' + esc(t('form.name', 'Full name')) + '</label><input id="lead-name" name="name" type="text" autocomplete="name" required><span class="err">' + esc(t('form.required', 'This field is required.')) + '</span></div>' +
             '<div class="field"><label for="lead-phone">' + esc(t('form.phone', 'Phone / WhatsApp')) + '</label><input id="lead-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" dir="ltr" placeholder="+20 1xx xxx xxxx" required><span class="err">' + esc(t('form.required', 'This field is required.')) + '</span></div>' +
             '<div class="field full"><label for="lead-email">' + esc(t('form.email', 'Email')) + ' <span class="muted">(' + esc(t('form.optional', 'optional')) + ')</span></label><input id="lead-email" name="email" type="email" autocomplete="email" dir="ltr"><span class="err">' + esc(t('form.emailInvalid', 'Please enter a valid email address.')) + '</span></div>' +
-            '<div class="visually-hidden" aria-hidden="true"><label for="lead-website">Leave this field empty</label><input id="lead-website" name="website" type="text" tabindex="-1" autocomplete="off"></div>' +
+            '<div class="visually-hidden" aria-hidden="true"><label for="lead-website">Leave this field empty</label><input id="lead-website" name="hp_url" type="text" tabindex="-1" autocomplete="off"></div>' +
           '</div>' +
           '<div class="btn-row">' +
             '<button type="submit" class="btn btn-wa" data-channel="whatsapp">' + waIcon() + ' ' + esc(t('quiz.lead.sendWa', 'Send via WhatsApp')) + '</button>' +
@@ -260,7 +260,7 @@
       }
       var channel = (e.submitter && e.submitter.getAttribute('data-channel')) || 'whatsapp';
       if (window.DD && window.DD.sendLead) {
-        window.DD.sendLead({ form: 'placement', name: name, phone: phone, email: email, level: s.level, score: s.total + '/' + QUESTIONS.length, website: form.elements.website.value });
+        window.DD.sendLead({ form: 'placement', name: name, phone: phone, email: email, level: s.level, score: s.total + '/' + QUESTIONS.length, hp_url: form.elements.hp_url.value });
       }
       if (channel === 'email') {
         var subject = isAr ? 'نتيجة اختبار تحديد المستوى — ' + name : 'Placement test result — ' + name;
