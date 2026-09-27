@@ -1,0 +1,81 @@
+# Deutsch Deluxe — Apache config for Namecheap cPanel shared hosting (public_html)
+# ------------------------------------------------------------------------------
+
+# --- Force HTTPS + canonical host (non-www) -----------------------------------
+RewriteEngine On
+RewriteCond %{HTTPS} !=on [OR]
+RewriteCond %{HTTP_HOST} ^www\. [NC]
+RewriteCond %{HTTP_HOST} ^(?:www\.)?(.+)$ [NC]
+RewriteRule ^ https://%1%{REQUEST_URI} [R=301,L]
+
+# --- Clean URLs: /courses -> courses.html (both forms work; canonical is .html) --
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.html -f
+RewriteRule ^([^.]+)$ $1.html [L]
+
+# --- Error pages ---------------------------------------------------------------
+ErrorDocument 404 /404.html
+ErrorDocument 403 /404.html
+
+# --- No directory listing, protect dot-files ----------------------------------
+Options -Indexes
+<FilesMatch "^\.">
+  Require all denied
+</FilesMatch>
+<FilesMatch "(?i)\.(md|json|lock|log|sh|php|yml|yaml)$">
+  Require all denied
+</FilesMatch>
+
+# --- Charset / MIME ------------------------------------------------------------
+AddDefaultCharset UTF-8
+AddType image/svg+xml .svg
+AddType application/manifest+json .webmanifest
+AddType font/woff2 .woff2
+
+# --- Compression ----------------------------------------------------------------
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml application/xml application/javascript text/javascript application/json image/svg+xml
+</IfModule>
+<IfModule mod_brotli.c>
+  AddOutputFilterByType BROTLI_COMPRESS text/html text/plain text/css text/xml application/xml application/javascript text/javascript application/json image/svg+xml
+</IfModule>
+
+# --- Cache headers ---------------------------------------------------------------
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/html "access plus 10 minutes"
+  ExpiresByType text/css "access plus 30 days"
+  ExpiresByType application/javascript "access plus 30 days"
+  ExpiresByType text/javascript "access plus 30 days"
+  ExpiresByType image/svg+xml "access plus 180 days"
+  ExpiresByType image/png "access plus 180 days"
+  ExpiresByType image/jpeg "access plus 180 days"
+  ExpiresByType image/webp "access plus 180 days"
+  ExpiresByType image/x-icon "access plus 180 days"
+  ExpiresByType font/woff2 "access plus 1 year"
+  ExpiresByType application/xml "access plus 1 day"
+  ExpiresByType text/plain "access plus 1 day"
+</IfModule>
+<IfModule mod_headers.c>
+  <FilesMatch "\.(css|js|svg|png|jpe?g|webp|ico|woff2)$">
+    Header set Cache-Control "public, max-age=2592000, stale-while-revalidate=86400"
+  </FilesMatch>
+  <FilesMatch "\.html$">
+    Header set Cache-Control "public, max-age=600, must-revalidate"
+  </FilesMatch>
+
+  # --- Security headers ---------------------------------------------------------
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+  Header always set X-Frame-Options "DENY"
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()"
+  Header always set Cross-Origin-Opener-Policy "same-origin"
+  Header always set Cross-Origin-Resource-Policy "same-origin"
+  # Strict CSP: everything is self-hosted. No inline scripts/styles are used anywhere.
+  # form-action allows the WhatsApp/mailto hand-off; frame-src 'none' because we link to Google Maps instead of embedding it.
+  # If you ever embed a Google Map iframe, change frame-src to: frame-src https://www.google.com
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-src 'none'; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self' https://wa.me mailto:; upgrade-insecure-requests"
+  Header unset X-Powered-By
+  Header unset Server
+</IfModule>

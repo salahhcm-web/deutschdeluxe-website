@@ -1,0 +1,6 @@
+# internal design reference (contains real customer names) — never publish
+reference/
+# OS / editor noise
+Thumbs.db
+.DS_Store
+*.log

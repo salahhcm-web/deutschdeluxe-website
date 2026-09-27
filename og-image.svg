@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#050a1f"/><stop offset=".5" stop-color="#0b1230"/><stop offset="1" stop-color="#050a1f"/></linearGradient>
+    <radialGradient id="glow1" cx="15%" cy="0%" r="60%"><stop offset="0" stop-color="#2f7bff" stop-opacity=".55"/><stop offset="1" stop-color="#2f7bff" stop-opacity="0"/></radialGradient>
+    <radialGradient id="glow2" cx="95%" cy="100%" r="55%"><stop offset="0" stop-color="#4ea1ff" stop-opacity=".45"/><stop offset="1" stop-color="#4ea1ff" stop-opacity="0"/></radialGradient>
+    <linearGradient id="txt" x1="0" y1="0" x2="0" y2="1"><stop offset=".2" stop-color="#ffffff"/><stop offset=".65" stop-color="#9cc6ff"/><stop offset="1" stop-color="#4ea1ff"/></linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f7d97a"/><stop offset=".55" stop-color="#f2c14e"/><stop offset="1" stop-color="#d99a1a"/></linearGradient>
+    <pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse"><circle cx="1.5" cy="1.5" r="1.3" fill="#ffffff" fill-opacity=".10"/></pattern>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#glow1)"/>
+  <rect width="1200" height="630" fill="url(#glow2)"/>
+  <rect width="1200" height="630" fill="url(#dots)"/>
+  <!-- logo -->
+  <g transform="translate(64 52)">
+    <g transform="scale(.75)"><path fill="url(#gold)" d="M6 36V16l12 9 14-19 14 19 12-9v20Z"/><rect fill="url(#gold)" x="6" y="38" width="52" height="5" rx="2"/><circle fill="url(#gold)" cx="6" cy="14" r="3.5"/><circle fill="url(#gold)" cx="32" cy="5" r="3.5"/><circle fill="url(#gold)" cx="58" cy="14" r="3.5"/></g>
+    <text x="62" y="22" font-family="Georgia, 'Times New Roman', serif" font-weight="700" font-size="24" fill="#ffffff" letter-spacing="4">DEUTSCH DELUXE</text>
+    <text x="62" y="44" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="14" fill="#a9b8e6">Sieh die Sprache mit anderen Augen</text>
+  </g>
+  <!-- ring -->
+  <circle cx="930" cy="330" r="220" fill="none" stroke="#4ea1ff" stroke-opacity=".35"/>
+  <circle cx="930" cy="330" r="160" fill="none" stroke="#4ea1ff" stroke-opacity=".3" stroke-dasharray="6 8"/>
+  <!-- Hallo! -->
+  <text x="640" y="380" text-anchor="middle" transform="rotate(-6 920 330)" font-family="'Segoe UI', Helvetica, Arial, sans-serif" font-weight="900" font-size="230" letter-spacing="-14" fill="url(#txt)">Hallo<tspan fill="#4ea1ff">!</tspan></text>
+  <!-- copy -->
+  <text x="64" y="470" font-family="'Segoe UI', Helvetica, Arial, sans-serif" font-weight="800" font-size="44" letter-spacing="-1" fill="#ffffff">New language. New confidence. New you.</text>
+  <text x="64" y="520" font-family="'Segoe UI', Helvetica, Arial, sans-serif" font-weight="600" font-size="24" fill="#a9b8e6">German courses A1–C1 · Goethe / ÖSD / telc exam prep · Nasr City, Cairo</text>
+  <!-- chips -->
+  <g font-family="'Segoe UI', Helvetica, Arial, sans-serif" font-weight="700" font-size="20" fill="#ffffff">
+    <rect x="64" y="556" width="130" height="44" rx="22" fill="#4ea1ff" fill-opacity=".12" stroke="#4ea1ff" stroke-opacity=".5"/><text x="129" y="585" text-anchor="middle">A1 → C1</text>
+    <rect x="208" y="556" width="230" height="44" rx="22" fill="#4ea1ff" fill-opacity=".12" stroke="#4ea1ff" stroke-opacity=".5"/><text x="323" y="585" text-anchor="middle">Goethe · ÖSD · telc</text>
+    <rect x="452" y="556" width="190" height="44" rx="22" fill="#4ea1ff" fill-opacity=".12" stroke="#4ea1ff" stroke-opacity=".5"/><text x="547" y="585" text-anchor="middle">max. 12 / group</text>
+  </g>
+  <text x="1136" y="600" text-anchor="end" font-family="'Segoe UI', Helvetica, Arial, sans-serif" font-weight="700" font-size="20" fill="#4ea1ff" letter-spacing="3">DEUTSCHDELUXE.SITE</text>
+</svg>
